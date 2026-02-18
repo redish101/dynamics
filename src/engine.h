@@ -10,9 +10,6 @@ struct EngineConfigure {
     int window_width;
     int window_height;
     const char* window_title;
-
-    // Tick per second
-    int tps;
 };
 
 class Engine {
@@ -25,11 +22,12 @@ public:
 private:
   void initGraphics();
   void initPhysics();
-  void update();
+  void update(double delta_time);
 
   EngineConfigure config;
 
   GLFWwindow* window;
+  double last_time;
 
   World world;
 };

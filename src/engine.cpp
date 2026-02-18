@@ -10,9 +10,18 @@ void Engine::run() {
   initGraphics();
   initPhysics();
 
+  last_time = glfwGetTime();
+
   while (!glfwWindowShouldClose(window) &&
          glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS) {
-    update();
+    double now = glfwGetTime();
+    double delta_time = now - last_time;
+    last_time = now;
+
+    // 防止窗口拖动/失焦导致 delta_time 过大（超过 100ms 则截断）
+    if (delta_time > 0.1) delta_time = 0.1;
+
+    update(delta_time);
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
@@ -71,12 +80,12 @@ void Engine::initPhysics() {
   world.init();
 }
 
-void Engine::update() {
+void Engine::update(double delta_time) {
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 
-  world.update(1.0 / config.tps);
-  world.render(1.0 / config.tps);
+  world.update(delta_time);
+  world.render(delta_time);
 }
 
 Vector Engine::getCenterPosition() {
