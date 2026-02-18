@@ -5,7 +5,7 @@ int main(int argc, char* argv[]) {
         .window_width = 800,
         .window_height = 600,
         .window_title = "Dynamics",
-        .tps = 60
+        .tps = 240
     });
 
     engine.run();

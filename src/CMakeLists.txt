@@ -2,6 +2,7 @@ add_executable(dynamics main.cpp
 
     # 图形及物理引擎
     engine.cpp
+    world.cpp
 
     # 物体类
     objects/object.cpp
