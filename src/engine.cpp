@@ -78,7 +78,7 @@ void Engine::initGraphics() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  glLineWidth(2.0f);
+  glLineWidth(10.0f);
 
   // GL_LINE_SMOOTH 需要配合混合才能生效
   glEnable(GL_LINE_SMOOTH);
