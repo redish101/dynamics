@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "vector.h"
+#include "math/vector.h"
 #include <iostream>
 
 // 物体

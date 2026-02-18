@@ -8,8 +8,8 @@ void World::addObject(std::unique_ptr<Object> obj) {
 
 void World::init() {
   Vector position = Vector(200.0, 800.0);
-  addObject(std::make_unique<Sphere>(50.0, 2.0, position, Vector(100.0, 0),
-                                     Vector(0, -9.8)));
+  addObject(std::make_unique<Sphere>(50.0, 2.0, position, Vector(70.0, 200.0),
+                                     Vector(0, -98)));
 }
 
 void World::update(double delta_time) {

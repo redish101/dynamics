@@ -3,7 +3,7 @@
 #include <cmath>
 
 // 每步度数
-#define ANGLE_STEP 1.0
+constexpr double ANGLE_STEP = 1.0;
 
 void Sphere::update(double delta_time) {
   // 更新运动学状态

@@ -4,6 +4,9 @@ add_executable(dynamics main.cpp
     engine.cpp
     world.cpp
 
+    # 数学
+    math/vector.cpp
+
     # 物体类
     objects/object.cpp
     objects/sphere.cpp
