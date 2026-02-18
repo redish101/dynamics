@@ -19,9 +19,11 @@ void Engine::run() {
     last_time = now;
 
     // 防止窗口拖动/失焦导致 delta_time 过大（超过 100ms 则截断）
-    if (delta_time > 0.1) delta_time = 0.1;
+    if (delta_time > 0.1)
+      delta_time = 0.1;
 
     update(delta_time);
+
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
@@ -34,6 +36,9 @@ void Engine::initGraphics() {
     std::cerr << "无法初始化GLFW\n" << std::endl;
     return;
   }
+
+  // 启用 MSAA 4x 多重采样抗锯齿
+  glfwWindowHint(GLFW_SAMPLES, 4);
 
   window = glfwCreateWindow(config.window_width, config.window_height,
                             config.window_title, nullptr, nullptr);
@@ -52,7 +57,11 @@ void Engine::initGraphics() {
     glfwTerminate();
     return;
   }
+
   glfwSwapInterval(1); // 启用垂直同步
+
+  // 启用 MSAA 多重采样
+  glEnable(GL_MULTISAMPLE);
 
   // 设置视口和正交投影：使用帧缓冲大小（考虑 Retina / 高 DPI）
   int fbw = 0, fbh = 0;
@@ -71,8 +80,11 @@ void Engine::initGraphics() {
 
   glLineWidth(2.0f);
 
-  // glEnable(GL_LINE_SMOOTH);
-  // glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+  // GL_LINE_SMOOTH 需要配合混合才能生效
+  glEnable(GL_LINE_SMOOTH);
+  glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Engine::initPhysics() {
