@@ -1,7 +1,7 @@
 add_executable(dynamics main.cpp
 
     # 图形及物理引擎
-    engine.cpp
+    graphic/engine.cpp
     world.cpp
 
     # 数学

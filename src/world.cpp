@@ -1,5 +1,5 @@
 #include "world.h"
-#include "engine.h"
+#include "graphic/engine.h"
 #include "objects/sphere.h"
 
 void World::addObject(std::unique_ptr<Object> obj) {
