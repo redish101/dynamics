@@ -8,6 +8,8 @@
 // 物体
 class Object {
 public:
+  virtual ~Object() = default;
+
   Object(double mass, Vector2D position, Vector2D velocity = Vector2D(),
          Vector2D acceleration = Vector2D())
       : mass(mass), position(position), velocity(velocity),
