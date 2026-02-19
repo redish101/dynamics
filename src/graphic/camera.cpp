@@ -5,6 +5,20 @@
 // clang-format on
 #include <cmath>
 
+Vector2D Camera::worldToScreen(const Vector2D& p) const {
+  return Vector2D(
+      screen_w * 0.5 + (p.x - position.x) * zoom,
+      screen_h * 0.5 + (p.y - position.y) * zoom);
+}
+
+void Camera::resize(int w, int h) {
+  screen_w = w;
+  screen_h = h;
+  // 让世界原点(0,0)落在屏幕左下角
+  // 推导：0 = screen_w/2 + (0 - position.x)*zoom => position.x = screen_w/2/zoom
+  position = Vector2D(w * 0.5 / zoom, h * 0.5 / zoom);
+}
+
 void Camera::processInput(GLFWwindow* window, double dt) {
   const double move = MOVE_SPEED / zoom * dt;
 
