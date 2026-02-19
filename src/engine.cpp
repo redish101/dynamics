@@ -50,7 +50,7 @@ void Engine::initGraphics() {
   }
 
   glfwMakeContextCurrent(window);
-  // 初始化 GLAD：必须在创建 OpenGL 上下文并使其 current 之后执行
+
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cerr << "Failed to initialize GLAD" << std::endl;
     glfwDestroyWindow(window);
@@ -63,7 +63,7 @@ void Engine::initGraphics() {
   // 启用 MSAA 多重采样
   glEnable(GL_MULTISAMPLE);
 
-  // 设置视口和正交投影：使用帧缓冲大小（考虑 Retina / 高 DPI）
+  // 设置视口和正交投影
   int fbw = 0, fbh = 0;
   glfwGetFramebufferSize(window, &fbw, &fbh);
   if (fbw == 0 || fbh == 0) {
@@ -80,7 +80,6 @@ void Engine::initGraphics() {
 
   glLineWidth(5.0f);
 
-  // GL_LINE_SMOOTH 需要配合混合才能生效
   glEnable(GL_LINE_SMOOTH);
   glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
   glEnable(GL_BLEND);
@@ -99,15 +98,57 @@ void Engine::update(double delta_time) {
   world.update(delta_time);
 
   // 渲染所有物体
-  for (const auto& obj : world.getObjects()) {
-    const auto& vertices = obj->getVertices();
-    if (vertices.empty()) continue;
+  const float LINE_HALF_W = 2.5f; // 线宽的一半（像素）
+  for (const auto &obj : world.getObjects()) {
+    const auto &verts = obj->getVertices();
+    if (verts.empty())
+      continue;
 
-    glBegin(GL_LINE_LOOP);
+    const size_t n = verts.size();
+    glBegin(GL_TRIANGLE_STRIP);
     glColor3f(obj->color[0], obj->color[1], obj->color[2]);
-    for (const auto& v : vertices) {
-      glVertex2d(v.x, v.y);
-  }
+
+    for (size_t i = 0; i <= n; i++) {
+      // 当前顶点与前后顶点（环形取模）
+      const Vector2D &prev = verts[(i + n - 1) % n];
+      const Vector2D &cur = verts[i % n];
+      const Vector2D &next = verts[(i + 1) % n];
+
+      // 两段方向的法线（指向外侧）
+      double tx1 = cur.x - prev.x, ty1 = cur.y - prev.y;
+      double len1 = std::sqrt(tx1 * tx1 + ty1 * ty1);
+      if (len1 > 0) {
+        tx1 /= len1;
+        ty1 /= len1;
+      }
+
+      double tx2 = next.x - cur.x, ty2 = next.y - cur.y;
+      double len2 = std::sqrt(tx2 * tx2 + ty2 * ty2);
+      if (len2 > 0) {
+        tx2 /= len2;
+        ty2 /= len2;
+      }
+
+      // 平均法线（miter 方向）
+      double nx = -(ty1 + ty2), ny = tx1 + tx2;
+      double nl = std::sqrt(nx * nx + ny * ny);
+      if (nl > 0) {
+        nx /= nl;
+        ny /= nl;
+      }
+
+      // miter 缩放：保证垂直线宽恒为 LINE_HALF_W
+      double miter = LINE_HALF_W;
+      double dot = nx * (-ty1) + ny * tx1; // cos(半角)
+      if (std::abs(dot) > 0.01)
+        miter = LINE_HALF_W / dot;
+      // 限制过尖的 miter
+      if (miter > LINE_HALF_W * 4.0)
+        miter = LINE_HALF_W * 4.0;
+
+      glVertex2d(cur.x + nx * miter, cur.y + ny * miter); // 外侧
+      glVertex2d(cur.x - nx * miter, cur.y - ny * miter); // 内侧
+    }
     glEnd();
   }
 }
