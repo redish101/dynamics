@@ -2,6 +2,7 @@ add_executable(dynamics main.cpp
 
     # 图形及物理引擎
     graphic/engine.cpp
+    graphic/camera.cpp
     world.cpp
 
     # 数学

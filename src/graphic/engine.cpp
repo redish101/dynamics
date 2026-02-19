@@ -78,6 +78,10 @@ void Engine::initGraphics() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
+  // 按帧缓冲实际宽度重算 zoom，保持屏幕宽度约 10m，再 resize 让 position 正确
+  camera.zoom = fbw / 10.0;
+  camera.resize(fbw, fbh);
+
   glLineWidth(5.0f);
 
   glEnable(GL_LINE_SMOOTH);
@@ -92,29 +96,35 @@ void Engine::initPhysics() {
 }
 
 void Engine::update(double delta_time) {
+  camera.processInput(window, delta_time);
+
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 
   world.update(delta_time);
 
-  // 渲染所有物体
+  // 渲染所有物体（用三角形带模拟等宽轮廓线，避免 GL_LINE_SMOOTH 端点变细）
   const float LINE_HALF_W = 2.5f; // 线宽的一半（像素）
   for (const auto &obj : world.getObjects()) {
     const auto &verts = obj->getVertices();
     if (verts.empty())
       continue;
 
+    // 世界坐标 -> 屏幕坐标
     const size_t n = verts.size();
+    std::vector<Vector2D> sv;
+    sv.reserve(n);
+    for (const auto &v : verts)
+      sv.push_back(camera.worldToScreen(v));
+
     glBegin(GL_TRIANGLE_STRIP);
     glColor3f(obj->color[0], obj->color[1], obj->color[2]);
 
     for (size_t i = 0; i <= n; i++) {
-      // 当前顶点与前后顶点（环形取模）
-      const Vector2D &prev = verts[(i + n - 1) % n];
-      const Vector2D &cur = verts[i % n];
-      const Vector2D &next = verts[(i + 1) % n];
+      const Vector2D &prev = sv[(i + n - 1) % n];
+      const Vector2D &cur = sv[i % n];
+      const Vector2D &next = sv[(i + 1) % n];
 
-      // 两段方向的法线（指向外侧）
       double tx1 = cur.x - prev.x, ty1 = cur.y - prev.y;
       double len1 = std::sqrt(tx1 * tx1 + ty1 * ty1);
       if (len1 > 0) {
@@ -129,7 +139,6 @@ void Engine::update(double delta_time) {
         ty2 /= len2;
       }
 
-      // 平均法线（miter 方向）
       double nx = -(ty1 + ty2), ny = tx1 + tx2;
       double nl = std::sqrt(nx * nx + ny * ny);
       if (nl > 0) {
@@ -137,17 +146,15 @@ void Engine::update(double delta_time) {
         ny /= nl;
       }
 
-      // miter 缩放：保证垂直线宽恒为 LINE_HALF_W
       double miter = LINE_HALF_W;
-      double dot = nx * (-ty1) + ny * tx1; // cos(半角)
+      double dot = nx * (-ty1) + ny * tx1;
       if (std::abs(dot) > 0.01)
         miter = LINE_HALF_W / dot;
-      // 限制过尖的 miter
       if (miter > LINE_HALF_W * 4.0)
         miter = LINE_HALF_W * 4.0;
 
-      glVertex2d(cur.x + nx * miter, cur.y + ny * miter); // 外侧
-      glVertex2d(cur.x - nx * miter, cur.y - ny * miter); // 内侧
+      glVertex2d(cur.x + nx * miter, cur.y + ny * miter);
+      glVertex2d(cur.x - nx * miter, cur.y - ny * miter);
     }
     glEnd();
   }

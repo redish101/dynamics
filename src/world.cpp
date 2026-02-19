@@ -7,9 +7,12 @@ void World::addObject(std::unique_ptr<Object> obj) {
 }
 
 void World::init() {
-  Vector2D position = Vector2D(200.0, 800.0);
-  addObject(std::make_unique<Sphere>(50.0, 2.0, position, Vector2D(70.0, 200.0),
-                                     Vector2D(0, -98)));
+  // 世界单位: 米 (m)，重力加速度 9.8 m/s²
+  // 初始位置在屏幕中央偏左下（约 x=3, y=3），屏幕范围约 10m×7.5m
+  addObject(std::make_unique<Sphere>(0.3, 2.0, Vector2D(3.0, 3.0),
+                                     Vector2D(2.0, 5.0), Vector2D(0.0, -9.8)));
+  addObject(std::make_unique<Sphere>(0.3, 2.0, Vector2D(4.0, 3.0),
+                                     Vector2D(0.0, 0.0), Vector2D(0.0, 0.0)));
 }
 
 void World::update(double delta_time) {
