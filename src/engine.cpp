@@ -78,7 +78,7 @@ void Engine::initGraphics() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  glLineWidth(10.0f);
+  glLineWidth(5.0f);
 
   // GL_LINE_SMOOTH 需要配合混合才能生效
   glEnable(GL_LINE_SMOOTH);
@@ -97,15 +97,27 @@ void Engine::update(double delta_time) {
   glClear(GL_COLOR_BUFFER_BIT);
 
   world.update(delta_time);
-  world.render(delta_time);
+
+  // 渲染所有物体
+  for (const auto& obj : world.getObjects()) {
+    const auto& vertices = obj->getVertices();
+    if (vertices.empty()) continue;
+
+    glBegin(GL_LINE_LOOP);
+    glColor3f(obj->color[0], obj->color[1], obj->color[2]);
+    for (const auto& v : vertices) {
+      glVertex2d(v.x, v.y);
+  }
+    glEnd();
+  }
 }
 
-Vector Engine::getCenterPosition() {
+Vector2D Engine::getCenterPosition() {
   int fbw = 0, fbh = 0;
   glfwGetFramebufferSize(window, &fbw, &fbh);
   if (fbw == 0 || fbh == 0) {
     fbw = config.window_width;
     fbh = config.window_height;
   }
-  return Vector((double)fbw / 2.0, (double)fbh / 2.0);
+  return Vector2D((double)fbw / 2.0, (double)fbh / 2.0);
 }

@@ -24,11 +24,11 @@ public:
   // 初始化世界
   void init();
 
-  // 更新世界中所有物体
+  // 更新世界中所有物体的物理状态
   void update(double delta_time);
 
-  // 渲染世界中所有物体
-  void render(double delta_time);
+  // 获取所有物体（供 Engine 遍历渲染）
+  const std::vector<std::unique_ptr<Object>>& getObjects() const { return objects; }
 
 private:
   std::vector<std::unique_ptr<Object>> objects;

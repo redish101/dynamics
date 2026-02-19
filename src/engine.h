@@ -18,7 +18,7 @@ public:
   ~Engine() {};
 
   void run();
-  Vector getCenterPosition();
+  Vector2D getCenterPosition();
 private:
   void initGraphics();
   void initPhysics();

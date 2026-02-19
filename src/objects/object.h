@@ -3,12 +3,13 @@
 
 #include "math/vector.h"
 #include <iostream>
+#include <vector>
 
 // 物体
 class Object {
 public:
-  Object(double mass, Vector position, Vector velocity = Vector(),
-         Vector acceleration = Vector())
+  Object(double mass, Vector2D position, Vector2D velocity = Vector2D(),
+         Vector2D acceleration = Vector2D())
       : mass(mass), position(position), velocity(velocity),
         acceleration(acceleration) {
     // 初始化颜色为黑色（默认值为 0.0f 表示黑）
@@ -16,7 +17,6 @@ public:
     color[1] = 0.0f;
     color[2] = 0.0f;
   };
-  virtual ~Object() {};
 
   // 更新物体状态
   virtual void update(double delta_time) {};
@@ -24,8 +24,8 @@ public:
   // 更新运动学状态
   void updateKinematics(double delta_time);
 
-  // 渲染物体
-  virtual void render(double delta_time) {};
+  // 返回用于渲染的顶点列表
+  virtual std::vector<Vector2D> getVertices() const = 0;
 
   friend std::ostream& operator<<(std::ostream& os, const Object& obj) {
     os << "Object(mass=" << obj.mass << ", position=" << obj.position
@@ -41,12 +41,12 @@ public:
   float color[3];
 
   // 运动学属性
-    // 位置
-  Vector position;
+  // 位置
+  Vector2D position;
   // 速度
-  Vector velocity;
+  Vector2D velocity;
   // 加速度
-  Vector acceleration;
+  Vector2D acceleration;
 };
 
 #endif
