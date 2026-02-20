@@ -4,6 +4,10 @@
 // 每步度数
 constexpr double ANGLE_STEP = 1.0;
 
+#ifdef _WIN32
+#define M_PI 3.14159265358979323846264338327950288
+#endif
+
 void Sphere::update(double delta_time) { updateKinematics(delta_time); }
 
 std::vector<Vector2D> Sphere::getVertices() const {
