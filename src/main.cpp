@@ -1,11 +1,13 @@
 #include "graphic/engine.h"
 
 int main(int argc, char *argv[]) {
-  Engine engine(EngineConfigure{
-      .window_width = 800,
-      .window_height = 600,
-      .window_title = "Dynamics",
-  });
+  EngineConfigure engineConfig;
+
+  engineConfig.window_width = 800;
+  engineConfig.window_height = 600;
+  engineConfig.window_title = "Dynamics";
+
+  Engine engine(engineConfig);
 
   engine.run();
 }
