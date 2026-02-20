@@ -7,8 +7,8 @@
 
 class World {
 public:
-  World() {};
-  ~World() {};
+  World() = default;
+  ~World() = default;
 
   // 禁止拷贝（unique_ptr 不可拷贝）
   World(const World &) = delete;

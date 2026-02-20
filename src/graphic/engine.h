@@ -15,8 +15,8 @@ struct EngineConfigure {
 
 class Engine {
 public:
-  Engine(EngineConfigure config) : config(config), window(nullptr) {};
-  ~Engine() {};
+  Engine(EngineConfigure config) : config(config), window(nullptr) {}
+  ~Engine() = default;
 
   void run();
   Vector2D getCenterPosition();
