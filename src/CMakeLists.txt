@@ -1,11 +1,18 @@
+set(PLATFORM)
+
 if(APPLE)
     set(MACOSX_BUNDLE_BUNDLE_NAME "dynamics")
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "top.redish101.dynamics")
     set(MACOSX_BUNDLE_BUNDLE_VERSION "1.0.0")
     set(MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0.0")
+    set(PLATFORM "MACOSX_BUNDLE")
 endif()
 
-add_executable(dynamics MACOSX_BUNDLE main.cpp
+if(WIN32)
+    set(PLATFORM "WIN32")
+endif()
+
+add_executable(dynamics ${PLATFORM} main.cpp
 
     # 图形引擎
     graphic/engine.cpp
