@@ -11,12 +11,12 @@ public:
   ~World() {};
 
   // 禁止拷贝（unique_ptr 不可拷贝）
-  World(const World&) = delete;
-  World& operator=(const World&) = delete;
+  World(const World &) = delete;
+  World &operator=(const World &) = delete;
 
   // 允许移动
-  World(World&&) = default;
-  World& operator=(World&&) = default;
+  World(World &&) = default;
+  World &operator=(World &&) = default;
 
   // 添加物体
   void addObject(std::unique_ptr<Object> obj);
@@ -28,7 +28,9 @@ public:
   void update(double delta_time);
 
   // 获取所有物体（供 Engine 遍历渲染）
-  const std::vector<std::unique_ptr<Object>>& getObjects() const { return objects; }
+  const std::vector<std::unique_ptr<Object>> &getObjects() const {
+    return objects;
+  }
 
 private:
   std::vector<std::unique_ptr<Object>> objects;

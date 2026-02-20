@@ -16,5 +16,5 @@ public:
 
   std::vector<Vector2D> getVertices() const override;
 };
- 
+
 #endif

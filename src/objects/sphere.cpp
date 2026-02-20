@@ -4,9 +4,7 @@
 // 每步度数
 constexpr double ANGLE_STEP = 1.0;
 
-void Sphere::update(double delta_time) {
-  updateKinematics(delta_time);
-}
+void Sphere::update(double delta_time) { updateKinematics(delta_time); }
 
 std::vector<Vector2D> Sphere::getVertices() const {
   std::vector<Vector2D> vertices;

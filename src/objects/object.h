@@ -29,7 +29,7 @@ public:
   // 返回用于渲染的顶点列表
   virtual std::vector<Vector2D> getVertices() const = 0;
 
-  friend std::ostream& operator<<(std::ostream& os, const Object& obj) {
+  friend std::ostream &operator<<(std::ostream &os, const Object &obj) {
     os << "Object(mass=" << obj.mass << ", position=" << obj.position
        << ", velocity=" << obj.velocity << ", acceleration=" << obj.acceleration
        << ")";
