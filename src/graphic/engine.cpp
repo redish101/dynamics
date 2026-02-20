@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 // clang-format on
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 void Engine::run() {
   initGraphics();
