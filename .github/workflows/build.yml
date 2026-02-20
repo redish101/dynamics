@@ -61,5 +61,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact-name }}
-          path: build/out/dynamics.exe
+          path: build/out/Release/dynamics.exe
           if-no-files-found: error
