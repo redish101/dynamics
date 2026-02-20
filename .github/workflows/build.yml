@@ -1,0 +1,60 @@
+name: Build
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    name: Build (${{ matrix.os-name }})
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os-name: macOS arm64
+            runner: macos-latest
+            cmake-preset: ""
+            artifact-name: dynamics-macos-arm64
+          - os-name: Windows x64
+            runner: windows-latest
+            cmake-preset: ""
+            artifact-name: dynamics-windows-x64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+      - name: Package app bundle (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          APP_PATH="build/out/dynamics.app"
+          ZIP_NAME="${{ matrix.artifact-name }}.zip"
+          ditto -c -k --keepParent "$APP_PATH" "$ZIP_NAME"
+
+      - name: Upload artifact (macOS)
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: ${{ matrix.artifact-name }}.zip
+          if-no-files-found: error
+
+      - name: Upload artifact (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: build/out/dynamics.exe
+          if-no-files-found: error
