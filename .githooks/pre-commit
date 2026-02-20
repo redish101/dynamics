@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo "Running clang-format..."
+
+# 只格式化已暂存的 C/C++ 文件
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(cpp|h)$')
+
+if [ -z "$files" ]; then
+  exit 0
+fi
+
+for file in $files; do
+  clang-format -i "$file"
+  git add "$file"
+done
+
+echo "clang-format complete."
