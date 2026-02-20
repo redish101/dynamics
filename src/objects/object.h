@@ -1,6 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include "forces/force.h"
 #include "math/vector.h"
 #include <iostream>
 #include <vector>
@@ -19,6 +20,9 @@ public:
     color[1] = 0.0f;
     color[2] = 0.0f;
   };
+
+  // 施加外力
+  void applyForce(const Force &force);
 
   // 更新物体状态
   virtual void update(double delta_time) {};
@@ -41,6 +45,9 @@ public:
   double mass;
   // 颜色
   float color[3];
+
+  // 物体受力
+  std::vector<Force *> forces;
 
   // 运动学属性
   // 位置

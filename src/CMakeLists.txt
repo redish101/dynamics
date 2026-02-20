@@ -1,8 +1,12 @@
 add_executable(dynamics main.cpp
 
-    # 图形及物理引擎
+    # 图形引擎
     graphic/engine.cpp
     graphic/camera.cpp
+
+    # 物理引擎
+    forces/force.cpp
+    forces/gravity.cpp
     world.cpp
 
     # 数学
