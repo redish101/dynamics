@@ -19,11 +19,15 @@ jobs:
             runner: macos-latest
             cmake-preset: ""
             artifact-name: dynamics-macos-arm64
-          - os-name: Windows x64
+          - os-name: Windows x86_64
             runner: windows-latest
             cmake-preset: ""
             artifact-name: dynamics-windows-x64
-
+          - os-name: Ubuntu x86_64
+            runner: ubuntu-latest
+            cmake-preset: ""
+            artifact-name: dynamics-windows-x64
+            
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,4 +66,13 @@ jobs:
         with:
           name: ${{ matrix.artifact-name }}
           path: build/out/Release/dynamics.exe
+          if-no-files-found: error
+
+
+      - name: Upload artifact (Linux)
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: build/out/dynamics.exe
           if-no-files-found: error
